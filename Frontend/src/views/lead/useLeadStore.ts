@@ -1,11 +1,11 @@
 import axiosIns from '@axios'
 
 interface State {
-  // eslint-disable-next-line @typescript-eslint/ban-types
   lead: Lead | {}
   leads: Lead[] | []
   statuses: any[] | [];
-
+ tabs: { icon: string; title: string; value: string }[];
+  tab: string;
 }
 
 export const useLeadStore = defineStore('LeadStore', {
@@ -19,6 +19,12 @@ export const useLeadStore = defineStore('LeadStore', {
       {id: 'UNQUALIFIED', name: 'Unqualified'},
       {id: 'CONVERTED', name: 'Converted'},
     ],
+    tabs: [
+      {title: 'Contacts', value: 'contacts', icon: 'tabler-users'},
+      {title: 'Notes', value: 'notes', icon: 'tabler-alien'},
+      {title: 'Reminders', value: 'reminders', icon: 'tabler-user-circle'},
+    ],
+    tab: 'contacts',
   }),
   actions: {
     async getLeads(params = {}) {
