@@ -30,7 +30,7 @@ axiosIns.interceptors.request.use(
   config => {
     config.headers = {
       ...(config.headers || {}),
-      Authorization: `Bearer ${localStorage.getItem('accessToken') || ''}`,
+      Authorization: `Token ${localStorage.getItem('accessToken') || ''}`,
     }
 
     return config
