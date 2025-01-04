@@ -1,22 +1,22 @@
 <script lang="ts" setup>
 import {VForm} from "vuetify/components";
 import {emailValidator, integerValidator, numberValidator, requiredValidator} from '@validators'
-import {useContactStore} from "@/views/contact/useContactStore";
+import {useNoteStore} from "@/views/note/useNoteStore";
 
 interface DialogEmit {
   (e: 'update:isDialogVisible', value: boolean): void
 }
 
-const contactStore = useContactStore()
-const {getContacts, getContact, updateContact, postContact} = contactStore
-const {contact} = storeToRefs(contactStore)
+const noteStore = useNoteStore()
+const {getNotes, getNote, updateNote, postNote} = noteStore
+const {note} = storeToRefs(noteStore)
 
 const route = useRoute()
 const lead_id = computed(() => route.params.id ? String(route.params.id) : null)
 
 const isDialogVisible = ref<boolean>(false)
 const errors = ref<Record<string, string | undefined>>({})
-const contactForm = ref<VForm>()
+const noteForm = ref<VForm>()
 const open = () => {
   isDialogVisible.value = true
 }
@@ -26,20 +26,20 @@ const emit = defineEmits<DialogEmit>()
 const dialogUpdate = (val: boolean) => {
   isDialogVisible.value = val
   if (!val) {
-    contactStore.contact = {}
+    noteStore.note = {}
   }
 }
 const user = computed(() => localStorage.getItem('userData') ? JSON.parse(localStorage.getItem('userData')!) : {})
 const isProcessing = ref(false)
 const save = () => {
-  contact.value.created_by = user.value.id
-  contact.value.lead = lead_id.value
-  contactForm.value?.validate().then(({valid: isValid}) => {
+  note.value.created_by = user.value.id
+  note.value.lead = lead_id.value
+  noteForm.value?.validate().then(({valid: isValid}) => {
     if (isValid) {
       isProcessing.value = true;
-      (contact.value?.id ? updateContact : postContact)().then(() => {
+      (note.value?.id ? updateNote : postNote)().then(() => {
         isProcessing.value = false
-        getContacts({}, lead_id)
+        getNotes({}, lead_id)
         dialogUpdate(false)
       })
     }
@@ -56,7 +56,7 @@ defineExpose({open})
     <!-- Dialog Activator -->
     <template #activator="{ props }">
             <VBtn v-bind="props" prepend-icon="tabler-plus">
-              Create Contact
+              Create Note
             </VBtn>
     </template>
 
@@ -64,48 +64,16 @@ defineExpose({open})
     <DialogCloseBtn @click="dialogUpdate(false)" />
 
        <!-- Dialog Content -->
-    <VCard title="Contact Form">
-      <VForm ref="contactForm" @submit.prevent="save">
+    <VCard title="Note Form">
+      <VForm ref="noteForm" @submit.prevent="save">
         <VCardText>
           <VRow>
             <VCol cols="12">
               <VTextField
-                v-model="contact.first_name"
-                label="First Name"
+                v-model="note.content"
+                label="Content"
                 :rules="[requiredValidator]"
-                :error-messages="errors.first_name"
-              />
-            </VCol>
-            <VCol cols="12">
-              <VTextField
-                v-model="contact.last_name"
-                label="Last Name"
-                :rules="[requiredValidator]"
-                :error-messages="errors.last_name"
-              />
-            </VCol>
-            <VCol cols="12">
-              <VTextField
-                v-model="contact.email"
-                label="Email"
-                :rules="[requiredValidator, emailValidator]"
-                :error-messages="errors.email"
-              />
-            </VCol>
-            <VCol cols="12">
-              <VTextField
-                v-model="contact.phone"
-                label="Phone Number"
-                :rules="[requiredValidator]"
-                :error-messages="errors.phone"
-              />
-            </VCol>
-            <VCol cols="12">
-              <VTextField
-                v-model="contact.position"
-                label="Position"
-                :rules="[requiredValidator]"
-                :error-messages="errors.position"
+                :error-messages="errors.content"
               />
             </VCol>
           </VRow>
