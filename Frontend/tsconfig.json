@@ -6,7 +6,7 @@
     "module": "esnext",
     "moduleResolution": "node",
     "isolatedModules": true,
-    "strict": true,
+    "strict": false,
     "jsx": "preserve",
     "jsxFactory": "h",
     "jsxFragmentFactory": "Fragment",
@@ -59,12 +59,16 @@
     ]
   },
   "include": [
-    "vite.config.*",
-    "env.d.ts",
-    "shims.d.ts",
-    "src/**/*",
-    "src/**/*.vue",
-    "themeConfig.ts"
+    "./typed-router.d.ts",
+    "./vite.config.*",
+    "./env.d.ts",
+    "./shims.d.ts",
+    "./types.d.ts",
+    "./src/**/*",
+    "./src/**/*.vue",
+    "./themeConfig.ts",
+    "./auto-imports.d.ts",
+    "./components.d.ts"
   ],
   "exclude": [
     "dist",

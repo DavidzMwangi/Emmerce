@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import AuthProvider from '@/views/pages/authentication/AuthProvider.vue'
 import { useGenerateImageVariant } from '@core/composable/useGenerateImageVariant'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
 import { themeConfig } from '@themeConfig'
@@ -11,6 +10,10 @@ import authV2LoginIllustrationDark from '@images/pages/auth-v2-login-illustratio
 import authV2LoginIllustrationLight from '@images/pages/auth-v2-login-illustration-light.png'
 import authV2MaskDark from '@images/pages/misc-mask-dark.png'
 import authV2MaskLight from '@images/pages/misc-mask-light.png'
+import {VForm} from "vuetify/components";
+import {useAuthStore} from "@/views/useAuthStore";
+import ability from "@/plugins/casl/ability";
+import axiosIns from "@axios";
 
 const authThemeImg = useGenerateImageVariant(authV2LoginIllustrationLight, authV2LoginIllustrationDark, authV2LoginIllustrationBorderedLight, authV2LoginIllustrationBorderedDark, true)
 
@@ -18,9 +21,29 @@ const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
 
 const isPasswordVisible = ref(false)
 
-const email = ref('admin@demo.com')
-const password = ref('admin')
-const rememberMe = ref(false)
+const route = useRoute()
+const router = useRouter()
+
+const loginForm = ref<VForm>()
+
+const auth = useAuthStore();
+const { login } = auth
+const { credentials, user, token, userAbilities, errors } = storeToRefs(auth)
+
+const onSubmit = () => {
+  loginForm.value?.validate().then(({ valid: isValid }) => {
+    if (isValid) {
+      login().then(() => {
+        if (user.value.id) {
+          ability.update(userAbilities.value)
+          axiosIns.defaults.headers['Authorization'] = `Bearer ${token}`
+          // Redirect to `to` query if exist or redirect to index route
+          router.replace(route.query.to ? String(route.query.to) : '/')
+        }
+      })
+    }
+  })
+}
 </script>
 
 <template>
@@ -72,45 +95,34 @@ const rememberMe = ref(false)
           </p>
         </VCardText>
         <VCardText>
-          <VAlert
-            color="primary"
-            variant="tonal"
-          >
-            <p class="text-caption mb-2">
-              Admin Email: <strong>admin@demo.com</strong> / Pass: <strong>admin</strong>
-            </p>
-            <p class="text-caption mb-0">
-              Client Email: <strong>client@demo.com</strong> / Pass: <strong>client</strong>
-            </p>
-          </VAlert>
-        </VCardText>
-        <VCardText>
-          <VForm @submit.prevent="() => {}">
+          <VForm ref="loginForm" @submit.prevent="onSubmit">
             <VRow>
               <!-- email -->
               <VCol cols="12">
                 <VTextField
-                  v-model="email"
+                  v-model="credentials.email"
                   label="Email"
                   type="email"
                   :rules="[requiredValidator, emailValidator]"
+                  :error-messages="errors.email"
                 />
               </VCol>
 
               <!-- password -->
               <VCol cols="12">
                 <VTextField
-                  v-model="password"
+                  v-model="credentials.password"
                   label="Password"
                   :rules="[requiredValidator]"
                   :type="isPasswordVisible ? 'text' : 'password'"
+                  :error-messages="errors.password"
                   :append-inner-icon="isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
                   @click:append-inner="isPasswordVisible = !isPasswordVisible"
                 />
 
                 <div class="d-flex align-center flex-wrap justify-space-between mt-2 mb-4">
                   <VCheckbox
-                    v-model="rememberMe"
+                    v-model="credentials.remember_me"
                     label="Remember me"
                   />
                   <a
@@ -127,36 +139,6 @@ const rememberMe = ref(false)
                 >
                   Login
                 </VBtn>
-              </VCol>
-
-              <!-- create account -->
-              <VCol
-                cols="12"
-                class="text-center"
-              >
-                <span>New on our platform?</span>
-                <a
-                  class="text-primary ms-2"
-                  href="#"
-                >
-                  Create an account
-                </a>
-              </VCol>
-              <VCol
-                cols="12"
-                class="d-flex align-center"
-              >
-                <VDivider />
-                <span class="mx-4">or</span>
-                <VDivider />
-              </VCol>
-
-              <!-- auth providers -->
-              <VCol
-                cols="12"
-                class="text-center"
-              >
-                <AuthProvider />
               </VCol>
             </VRow>
           </VForm>
