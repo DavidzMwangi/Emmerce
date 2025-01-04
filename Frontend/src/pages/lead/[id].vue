@@ -3,6 +3,7 @@
 import {useLeadStore} from "@/views/lead/useLeadStore";
 import {useResponsiveLeftSidebar} from "@core/composable/useResponsiveSidebar";
 import ContactList from "@/views/contact/ContactList.vue";
+import NoteList from "@/views/note/NoteList.vue";
 
 const leadStore = useLeadStore()
 const {getLeads, getLead} = leadStore
@@ -76,7 +77,7 @@ const {isLeftSidebarOpen} = useResponsiveLeftSidebar()
                 <ContactList :id="id"/>
               </VWindowItem>
               <VWindowItem value="notes">
-<!--                <Automation :portal="portal"/>-->
+                <NoteList :id="id"/>
               </VWindowItem>
               <VWindowItem value="reminders">
 <!--                <AccountsList :id="id"/>-->
