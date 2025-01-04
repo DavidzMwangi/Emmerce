@@ -7,6 +7,11 @@ export default [
     icon: { icon: 'tabler-smart-home' },
   },
   {
+    title: 'Lead',
+    to: { name: 'lead' },
+    icon: { icon: 'tabler-user' },
+  },
+  {
     title: 'Home',
     to: { name: 'index' },
     icon: { icon: 'tabler-smart-home' },

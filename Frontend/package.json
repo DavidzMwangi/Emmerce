@@ -6,7 +6,6 @@
     "build": "npm run build:icons && vite build",
     "preview": "vite preview --port 5050",
     "typecheck": "vue-tsc --noEmit",
-    "lint": "eslint . -c .eslintrc.js --fix --rulesdir eslint-internal-rules/ --ext .ts,.js,.vue,.tsx,.jsx",
     "build:icons": "tsc -b src/@iconify && node src/@iconify/build-icons.js"
   },
   "dependencies": {
@@ -40,7 +39,6 @@
     "webfontloader": "^1.6.28"
   },
   "devDependencies": {
-    "@antfu/eslint-config-vue": "^0.31.0",
     "@fullcalendar/core": "^5.11.3",
     "@fullcalendar/daygrid": "^5.11.3",
     "@fullcalendar/interaction": "^5.11.3",
@@ -54,18 +52,8 @@
     "@intlify/vite-plugin-vue-i18n": "^5.0.1",
     "@types/node": "^18.7.18",
     "@types/webfontloader": "^1.6.34",
-    "@typescript-eslint/eslint-plugin": "^5.43.0",
-    "@typescript-eslint/parser": "^5.43.0",
     "@vitejs/plugin-vue": "^3.1.0",
     "@vitejs/plugin-vue-jsx": "^2.1.1",
-    "eslint": "^8.28.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-import-resolver-typescript": "^3.5.1",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-promise": "^6.0.1",
-    "eslint-plugin-sonarjs": "^0.16.0",
-    "eslint-plugin-unicorn": "^45.0.0",
-    "eslint-plugin-vue": "^9.5.1",
     "postcss-html": "^1.5.0",
     "stylelint": "^14.15.0",
     "stylelint-config-idiomatic-order": "^9.0.0",
