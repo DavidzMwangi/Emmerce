@@ -5,12 +5,11 @@ import {useLeadStore} from "@/views/lead/useLeadStore";
 
 const leadStore = useLeadStore()
 const {getLeads, getLead} = leadStore
-const {leads} = storeToRefs(leadStore)
+const {leads, statuses} = storeToRefs(leadStore)
 
 const leadDialog = ref()
 
 // 👉 Fetch Feedbacks
-// watch((), (val) => getLeads(val), {immediate: true, deep: true})
 watchEffect(() => getLeads())
 
 const edit = (id: string) => {
@@ -30,18 +29,6 @@ const resolveStatusVariant = (status: number) => {
     id="feedback-list"
   >
     <VCardText class="d-flex align-center flex-wrap gap-4">
-<!--      <div-->
-<!--        class="d-flex align-center"-->
-<!--        style="width: 135px;"-->
-<!--      >-->
-<!--        <span class="text-no-wrap me-3">Show:</span>-->
-<!--        <VSelect-->
-<!--          :model-value="tableParams.per_page"-->
-<!--          @update:model-value="(val) => updateTableParams('per_page', val)"-->
-<!--          density="compact"-->
-<!--          :items="[10, 20, 30, 50]"-->
-<!--        />-->
-<!--      </div>-->
 
       <div class="me-3">
         <LeadForm ref="leadDialog"/>
@@ -49,16 +36,6 @@ const resolveStatusVariant = (status: number) => {
 
       <VSpacer/>
 
-<!--      <div class="d-flex align-center flex-wrap gap-4">-->
-<!--        <div class="feedback-list-filter">-->
-<!--          <VTextField-->
-<!--            :model-value="tableParams.search"-->
-<!--            @update:model-value="(val) => updateTableParams('search', val)"-->
-<!--            placeholder="Search Feedback"-->
-<!--            density="compact"-->
-<!--          />-->
-<!--        </div>-->
-<!--      </div>-->
     </VCardText>
 
     <VDivider/>
@@ -85,14 +62,14 @@ const resolveStatusVariant = (status: number) => {
           Status
         </th>
 
-        <th scope="col">
-          Created
-        </th>
 
         <th scope="col">
           Created By
         </th>
 
+        <th scope="col">
+          Creation Time
+        </th>
         <th
           scope="col"
         >
@@ -109,21 +86,9 @@ const resolveStatusVariant = (status: number) => {
         <td>{{ lead.title }}</td>
         <td>{{ lead.company }}</td>
         <td>{{ lead.description }}</td>
-        <td>{{ lead.status }}</td>
+        <td>{{statuses.find((stat) => stat.id === lead.status)?.name || 'Unknown'}}</td>
         <td>{{ lead.created_by_name }}</td>
         <td>{{ useDateFormat(lead.created_at, "MMM, DD YYYY HH:mm").value }}</td>
-
-<!--        <td>-->
-<!--          <VChip-->
-<!--            :color="resolveStatusVariant(feedback.status).color"-->
-<!--            density="comfortable"-->
-<!--            class="font-weight-medium"-->
-<!--            size="small"-->
-<!--          >-->
-<!--            {{ resolveStatusVariant(feedback.status).text }}-->
-<!--          </VChip>-->
-<!--        </td>-->
-
         <td style="width: 8rem;">
           <VBtn
             icon
@@ -153,19 +118,7 @@ const resolveStatusVariant = (status: number) => {
     </VTable>
 
     <VDivider/>
-<!--    <VCardText class="d-flex align-center flex-wrap gap-4 py-3">-->
-<!--      <span class="text-sm text-disabled">-->
-<!--        {{ paginationData }}-->
-<!--      </span>-->
 
-<!--      <VSpacer/>-->
-<!--      <VPagination-->
-<!--        v-model="tableParams.page"-->
-<!--        size="small"-->
-<!--        :total-visible="5"-->
-<!--        :length="pages"-->
-<!--      />-->
-<!--    </VCardText>-->
   </VCard>
 </template>
 
