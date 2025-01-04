@@ -49,7 +49,7 @@ type Contact = Model & {
   email: string
   phone: string
   position: string
-  lead: Lead
+  lead: number
 }
 
 type Note = Model & {

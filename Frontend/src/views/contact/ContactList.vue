@@ -1,19 +1,31 @@
 <script setup lang="ts">
 // 👉 Store
-import LeadForm from "@/views/lead/LeadForm.vue";
-import {useLeadStore} from "@/views/lead/useLeadStore";
+import ContactForm from "@/views/contact/ContactForm.vue";
+import {useContactStore} from "@/views/contact/useContactStore";
 
-const leadStore = useLeadStore()
-const {getLeads, getLead} = leadStore
-const {leads, statuses} = storeToRefs(leadStore)
+const contactStore = useContactStore()
+const {getContacts, getContact} = contactStore
+const {contacts} = storeToRefs(contactStore)
+const props = defineProps({
+  id: {
+    type: String,
+    required: true
+  }
+})
 
-const leadDialog = ref()
+const contactDialog = ref()
 
 // 👉 Fetch Feedbacks
-watchEffect(() => getLeads())
+watchEffect(() => {
+  if (props.id) {
+    getContacts({}, props.id)
+  }
+})
 
 const edit = (id: string) => {
-  getLead(id).then(() => leadDialog.value.open())
+  getContact(id).then(() => {
+    contactDialog.value.open()
+  })
 }
 </script>
 
@@ -24,7 +36,7 @@ const edit = (id: string) => {
     <VCardText class="d-flex align-center flex-wrap gap-4">
 
       <div class="me-3">
-        <LeadForm ref="leadDialog"/>
+        <ContactForm ref="contactDialog"/>
       </div>
 
       <VSpacer/>
@@ -40,29 +52,30 @@ const edit = (id: string) => {
         <th
           scope="col"
         >
-          Title
+          First Name
         </th>
 
         <th scope="col">
-          Company
+          Last Name
         </th>
 
         <th scope="col">
-          Description
+          Email
         </th>
 
         <th scope="col">
-          Status
+          Phone
         </th>
 
 
         <th scope="col">
-          Created By
+         Position
         </th>
 
         <th scope="col">
-          Creation Time
+         Creation Time
         </th>
+
         <th
           scope="col"
         >
@@ -72,45 +85,34 @@ const edit = (id: string) => {
       </thead>
       <tbody>
       <tr
-        v-for="lead in leads"
-        :key="lead.id"
+        v-for="contact in contacts"
+        :key="contact.id"
         style="height: 3.75rem;"
       >
-        <td>{{ lead.title }}</td>
-        <td>{{ lead.company }}</td>
-        <td>{{ lead.description }}</td>
-        <td>{{statuses.find((stat) => stat.id === lead.status)?.name || 'Unknown'}}</td>
-        <td>{{ lead.created_by_name }}</td>
-        <td>{{ useDateFormat(lead.created_at, "MMM, DD YYYY HH:mm").value }}</td>
+        <td>{{ contact.first_name }}</td>
+        <td>{{ contact.last_name }}</td>
+        <td>{{ contact.email }}</td>
+        <td>{{ contact.phone }}</td>
+        <td>{{ contact.position }}</td>
+        <td>{{ useDateFormat(contact.created_at, "MMM, DD YYYY HH:mm").value }}</td>
         <td style="width: 8rem;">
           <VBtn
             icon
             variant="text"
             color="default"
             size="x-small"
-            @click="edit(lead.id)"
+            @click="edit(contact.id)"
           >
             <VIcon
               icon="tabler-pencil"
               :size="22"
             />
           </VBtn>
-           <VBtn
-            icon
-            variant="text"
-            color="default"
-            size="x-small"
-            :to="`/lead/${lead.id}`"
-          >
-            <VIcon
-              icon="tabler-eye"
-              :size="22"
-            />
-          </VBtn>
+
         </td>
       </tr>
       </tbody>
-      <tfoot v-show="!leads.length">
+      <tfoot v-show="!contacts.length">
       <tr>
         <td
           colspan="3"
