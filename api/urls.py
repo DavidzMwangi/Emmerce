@@ -10,7 +10,7 @@ router.register(r'notes', views.NoteViewSet, basename='note')
 router.register(r'reminders', views.ReminderViewSet, basename='reminder')
 
 urlpatterns = [
-    # path('', include(router.urls)),
+    path('', include(router.urls)),
     path('auth/login', LoginView.as_view(), name='login'),
 
 ]
