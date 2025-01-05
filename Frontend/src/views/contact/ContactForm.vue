@@ -39,7 +39,7 @@ const save = () => {
       isProcessing.value = true;
       (contact.value?.id ? updateContact : postContact)().then(() => {
         isProcessing.value = false
-        getContacts({}, lead_id)
+        getContacts({}, lead_id.value)
         dialogUpdate(false)
       })
     }

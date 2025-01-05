@@ -1,22 +1,24 @@
 <script lang="ts" setup>
 import {VForm} from "vuetify/components";
 import {emailValidator, integerValidator, numberValidator, requiredValidator} from '@validators'
-import {useNoteStore} from "@/views/note/useNoteStore";
+import {useReminderStore} from "@/views/reminder/useReminderStore";
 
 interface DialogEmit {
   (e: 'update:isDialogVisible', value: boolean): void
 }
 
-const noteStore = useNoteStore()
-const {getNotes, getNote, updateNote, postNote} = noteStore
-const {note} = storeToRefs(noteStore)
+const reminderStore = useReminderStore()
+const {getReminders, getReminder, updateReminder, postReminder} = reminderStore
+const {reminder} = storeToRefs(reminderStore)
+
+
 
 const route = useRoute()
 const lead_id = computed(() => route.params.id ? String(route.params.id) : null)
 
 const isDialogVisible = ref<boolean>(false)
 const errors = ref<Record<string, string | undefined>>({})
-const noteForm = ref<VForm>()
+const reminderForm = ref<VForm>()
 const open = () => {
   isDialogVisible.value = true
 }
@@ -26,25 +28,30 @@ const emit = defineEmits<DialogEmit>()
 const dialogUpdate = (val: boolean) => {
   isDialogVisible.value = val
   if (!val) {
-    noteStore.note = {}
+    reminderStore.reminder = {}
   }
 }
 const user = computed(() => localStorage.getItem('userData') ? JSON.parse(localStorage.getItem('userData')!) : {})
 const isProcessing = ref(false)
 const save = () => {
-  note.value.created_by = user.value.id
-  note.value.lead = lead_id.value
-  noteForm.value?.validate().then(({valid: isValid}) => {
+  reminder.value.created_by = user.value.id
+  reminder.value.lead = lead_id.value
+  reminderForm.value?.validate().then(({valid: isValid}) => {
     if (isValid) {
       isProcessing.value = true;
-      (note.value?.id ? updateNote : postNote)().then(() => {
+      (reminder.value?.id ? updateReminder : postReminder)().then(() => {
         isProcessing.value = false
-        getNotes({}, lead_id.value)
+        getReminders({}, lead_id.value)
         dialogUpdate(false)
       })
     }
   })
 }
+const statuses = [
+  {id: true, title: 'Mark Complete'},
+  {id: false, title: 'Mark As InComplete'}
+]
+
 defineExpose({open})
 </script>
 
@@ -56,7 +63,7 @@ defineExpose({open})
     <!-- Dialog Activator -->
     <template #activator="{ props }">
             <VBtn v-bind="props" prepend-icon="tabler-plus">
-              Create Note
+              Create Reminder
             </VBtn>
     </template>
 
@@ -64,17 +71,47 @@ defineExpose({open})
     <DialogCloseBtn @click="dialogUpdate(false)" />
 
        <!-- Dialog Content -->
-    <VCard title="Note Form">
-      <VForm ref="noteForm" @submit.prevent="save">
+    <VCard title="Reminder Form">
+      <VForm ref="reminderForm" @submit.prevent="save">
         <VCardText>
           <VRow>
             <VCol cols="12">
               <VTextField
-                v-model="note.content"
-                label="Content"
+                v-model="reminder.title"
+                label="Title"
                 :rules="[requiredValidator]"
-                :error-messages="errors.content"
+                :error-messages="errors.title"
               />
+            </VCol>
+            <VCol cols="12">
+              <VTextField
+                v-model="reminder.description"
+                label="Description"
+                :rules="[requiredValidator]"
+                :error-messages="errors.description"
+              />
+            </VCol>
+            <VCol cols="6">
+              <AppDateTimePicker
+                v-model="reminder.due_date"
+                label="Due Date"
+                :config="{ enableTime: true, dateFormat: 'Y-m-d H:i', inline:true }"
+                class="calendar-date-picker"
+              />
+            </VCol>
+            <VCol cols="6">
+              <VRadioGroup
+                v-model="reminder.completed"
+                label="Status"
+                inline
+              >
+                <VRadio
+                  v-for="radio in statuses"
+                  :key="radio"
+                  :label="radio.title"
+                  :value="radio.id"
+                />
+              </VRadioGroup>
             </VCol>
           </VRow>
         </VCardText>
