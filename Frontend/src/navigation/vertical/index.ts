@@ -11,14 +11,4 @@ export default [
     to: { name: 'lead' },
     icon: { icon: 'tabler-user' },
   },
-  {
-    title: 'Home',
-    to: { name: 'index' },
-    icon: { icon: 'tabler-smart-home' },
-  },
-  {
-    title: 'Second page',
-    to: { name: 'second-page' },
-    icon: { icon: 'tabler-file' },
-  },
 ] as VerticalNavItems

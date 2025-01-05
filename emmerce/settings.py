@@ -40,8 +40,10 @@ INSTALLED_APPS = [
     'rest_framework',  # Required for API creation
     'api',
     'corsheaders',
-    'rest_framework.authtoken'
+    'rest_framework.authtoken',
 
+    'django_celery_beat',  # Required for periodic tasks
+    'django_celery_results',  # For storing task results in Django's DB
 ]
 
 MIDDLEWARE = [
@@ -150,3 +152,25 @@ CORS_ALLOW_HEADERS = [
     'user-agent',
 ]
 APPEND_SLASH = False
+
+
+# Celery Configuration Settings
+CELERY_TIMEZONE = "UTC"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minutes timeout
+CELERY_RESULT_BACKEND = 'django-db'  # Store results in Django's database
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Redis as message broker
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+
+# Celery Beat Settings (for scheduled tasks)
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
+# Email settings for Celery tasks that send emails
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Or your email host
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'your@email.com'  # Set in .env
+EMAIL_HOST_PASSWORD = 'your-password'  # Set in .env
