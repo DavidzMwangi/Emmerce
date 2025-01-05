@@ -108,6 +108,15 @@ The frontend is connected to the Django backend via a token-based API. Ensure th
 
 Open your browser and navigate to `http://localhost:8080` to view the application.
 
+
+### **Demo Credentials as provided in the default sqlite db**
+Use the following credentials to access the application:
+
+- **Email:** `admin@admin.com`  
+- **Password:** `password`
+
+---
+
 ## Additional Information
 
 - The backend uses SQLite, so there is no need to set up a new database.
