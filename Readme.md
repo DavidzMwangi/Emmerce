@@ -1,4 +1,3 @@
-```markdown
 # Emmerce Project
 
 ## Overview
