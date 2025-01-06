@@ -67,26 +67,6 @@ This project is a full-stack application with a Django backend and a Vue 3 front
    python manage.py runserver
    ```
 
-## Frontend Setup (Vue 3)
-
-1. **Navigate to the `Frontend` directory:**
-
-   ```sh
-   cd Frontend
-   ```
-
-2. **Install the required Node.js packages:**
-
-   ```sh
-   yarn install
-   ```
-
-3. **Run the Vue development server:**
-
-   ```sh
-   yarn serve
-   ```
-
 ## Connecting Frontend to Backend
 
 The frontend is connected to the Django backend via a token-based API. Ensure that the backend server is running before starting the frontend server.
@@ -99,12 +79,6 @@ The frontend is connected to the Django backend via a token-based API. Ensure th
    python manage.py runserver
    ```
 
-2. **Start the Vue frontend server:**
-
-   ```sh
-   cd Frontend
-   yarn serve
-   ```
 
 Open your browser and navigate to `http://localhost:8080` to view the application.
 
