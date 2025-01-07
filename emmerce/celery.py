@@ -13,7 +13,7 @@ app.autodiscover_tasks()
 # Configure Celery Beat schedule
 app.conf.beat_schedule = {
     'check-reminders': {
-        'task': 'crm.tasks.check_reminders',
+        'task': 'emmerce.tasks.check_reminders',
         'schedule': timedelta(minutes=15),
     },
 }
