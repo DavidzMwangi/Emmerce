@@ -7,6 +7,7 @@ from rest_framework.decorators import action
 
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
@@ -65,6 +66,9 @@ class ReminderViewSet(viewsets.ModelViewSet):
 
 
 class LoginView(APIView):
+    authentication_classes = []  # Disable authentication entirely
+    permission_classes = [AllowAny]  # Exempt this view from authentication
+
     def post(self, request):
         email = request.data.get('email')
         password = request.data.get('password')
